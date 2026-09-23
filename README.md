@@ -1,5 +1,9 @@
 # Calendar for Omarchy
 
+> **My personal fork of [tmn73/omarchy-calendar](https://github.com/tmn73/omarchy-calendar).**
+> It tracks upstream and carries whatever I want running on my own machine: pull requests
+> upstream has not merged, and changes of my own.
+
 **Your Google Calendar, in your Omarchy bar.** A month view with your real
 events on it, and a bar that tells you what is coming before it starts.
 
@@ -53,9 +57,7 @@ remove the `omarchy.clock` entry from `bar.layout.center` and point
   "bar": {
     "centerAnchor": "tmn73.calendar",
     "layout": {
-      "center": [
-        { "id": "tmn73.calendar", "format": "dddd HH:mm" }
-      ]
+      "center": [{ "id": "tmn73.calendar", "format": "dddd HH:mm" }]
     }
   }
 }
@@ -82,7 +84,7 @@ Run it in a real terminal. It pauses for input, and four steps have to be done
 by hand in the Google Cloud Console.
 
 **You need your own Google OAuth client.** There is no shared one, and that is
-not laziness. `calendar.readonly` is a Google *sensitive* scope, so a publicly
+not laziness. `calendar.readonly` is a Google _sensitive_ scope, so a publicly
 distributed client would need Google verification and is capped at 100 users
 until it gets it. This is exactly why `gcalcli`'s shared token is currently
 restricted. Every user brings their own credentials.
@@ -148,12 +150,12 @@ a shell script, a cron job of your own. No credentials, no network, no `gws`.
 
 These four extra fields are optional. Omit them and everything still works:
 
-| Field | Effect |
-|---|---|
-| `meetingUrl` | Shows the **Join** button around the event's time. Must be `https`, anything else is dropped |
-| `eventUrl` | Clicking the row opens this. Must be `https` |
-| `eventType` | `workingLocation` is hidden by default, `outOfOffice` is labelled |
-| `responseStatus` | `declined` is struck through, and can be hidden entirely |
+| Field            | Effect                                                                                       |
+| ---------------- | -------------------------------------------------------------------------------------------- |
+| `meetingUrl`     | Shows the **Join** button around the event's time. Must be `https`, anything else is dropped |
+| `eventUrl`       | Clicking the row opens this. Must be `https`                                                 |
+| `eventType`      | `workingLocation` is hidden by default, `outOfOffice` is labelled                            |
+| `responseStatus` | `declined` is struck through, and can be hidden entirely                                     |
 
 Rules a writer has to follow:
 
@@ -174,15 +176,15 @@ Click the clock, then the gear icon in the panel header.
 
 ![The settings page](docs/images/settings.png)
 
-| Section | What it does |
-|---|---|
-| Calendars | Show or hide each calendar. The list comes from your own events, so it needs no configuration |
-| Week starts on Monday | Off starts the week on Sunday |
+| Section                 | What it does                                                                                              |
+| ----------------------- | --------------------------------------------------------------------------------------------------------- |
+| Calendars               | Show or hide each calendar. The list comes from your own events, so it needs no configuration             |
+| Week starts on Monday   | Off starts the week on Sunday                                                                             |
 | Working location events | Google's work-from-home markers. Hidden by default because they are all-day rows describing no commitment |
-| Declined invitations | On lists them struck through, off hides them entirely |
-| Year and life progress | Brings back the built-in clock's bars, off by default |
-| Bar label | How early the bar announces what is next: never, 5, 15, 30 or 60 minutes |
-| Sync | Event count, source and last sync time, for diagnosing a quiet calendar |
+| Declined invitations    | On lists them struck through, off hides them entirely                                                     |
+| Year and life progress  | Brings back the built-in clock's bars, off by default                                                     |
+| Bar label               | How early the bar announces what is next: never, 5, 15, 30 or 60 minutes                                  |
+| Sync                    | Event count, source and last sync time, for diagnosing a quiet calendar                                   |
 
 Hiding a calendar is instant and does not change what the sync fetches, so
 bringing one back does not wait for the next run.
@@ -209,18 +211,18 @@ journalctl --user -u omarchy-calendar-sync -f
 systemctl --user list-timers omarchy-calendar-sync.timer
 ```
 
-| Symptom | Cause |
-|---|---|
-| `403 insufficient scopes` | The calendar scope was never granted. Check `gws auth status`; if it only lists `openid` and `email`, declare the scope under Data Access in the console, then run `sync/setup` again |
-| `401 invalid_grant` | The refresh token expired. Almost always an app left in Testing, which caps refresh tokens at seven days. Publish it, then log in again |
-| `gws is not installed or not on PATH` from the timer, but it works in your terminal | `gwsPath` is not absolute. `sync/setup` writes it for you |
-| The panel says "No calendar synced yet" | The events file does not exist. The sync has never completed |
-| The panel says the calendar may be out of date | The file exists but `syncedAt` is old. Check the journal above |
-| An event shows up twice | Two of your calendars both carry it. Hide one in settings. The sync already drops exact duplicates by iCalUID and start time |
-| `The project ID you specified is already in use` during setup | Fixed in 0.1.1. Google Cloud project ids are unique across all of Google, and older versions hardcoded one. Update the plugin, or pass your own: `PROJECT_ID=something-unique sync/setup` |
-| Clicking an event opens your calendar but not the event | The link resolves only for the Google account the sync authenticated as. If your browser opens it in a profile signed into a different account, Google falls back to the calendar root. Route `google.com/calendar` to the profile holding that account |
-| The Join button never appears | It only shows from 15 minutes before the start until 15 minutes after the end, and only when the event has a video link |
-| Events are off by a day | Report it. Timezone handling resolves a named IANA zone precisely to avoid this, and there is a regression test for daylight saving transitions |
+| Symptom                                                                             | Cause                                                                                                                                                                                                                                                   |
+| ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `403 insufficient scopes`                                                           | The calendar scope was never granted. Check `gws auth status`; if it only lists `openid` and `email`, declare the scope under Data Access in the console, then run `sync/setup` again                                                                   |
+| `401 invalid_grant`                                                                 | The refresh token expired. Almost always an app left in Testing, which caps refresh tokens at seven days. Publish it, then log in again                                                                                                                 |
+| `gws is not installed or not on PATH` from the timer, but it works in your terminal | `gwsPath` is not absolute. `sync/setup` writes it for you                                                                                                                                                                                               |
+| The panel says "No calendar synced yet"                                             | The events file does not exist. The sync has never completed                                                                                                                                                                                            |
+| The panel says the calendar may be out of date                                      | The file exists but `syncedAt` is old. Check the journal above                                                                                                                                                                                          |
+| An event shows up twice                                                             | Two of your calendars both carry it. Hide one in settings. The sync already drops exact duplicates by iCalUID and start time                                                                                                                            |
+| `The project ID you specified is already in use` during setup                       | Fixed in 0.1.1. Google Cloud project ids are unique across all of Google, and older versions hardcoded one. Update the plugin, or pass your own: `PROJECT_ID=something-unique sync/setup`                                                               |
+| Clicking an event opens your calendar but not the event                             | The link resolves only for the Google account the sync authenticated as. If your browser opens it in a profile signed into a different account, Google falls back to the calendar root. Route `google.com/calendar` to the profile holding that account |
+| The Join button never appears                                                       | It only shows from 15 minutes before the start until 15 minutes after the end, and only when the event has a video link                                                                                                                                 |
+| Events are off by a day                                                             | Report it. Timezone handling resolves a named IANA zone precisely to avoid this, and there is a regression test for daylight saving transitions                                                                                                         |
 
 ## Uninstall
 
